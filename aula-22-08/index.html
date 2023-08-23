@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Jogo</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <h1>Meu Jogo</h1>
+
+    <p>Forneça seu palpite</p>
+
+    <form id="form">
+        <div class="input-box">
+            <label for="bet-number"></label>
+            <input id="bet-number" type="number" min=0 max=100 required />
+
+            <p>Digite um número</p>
+        </div>
+
+        <button id="submit" type="submit">Enviar</button>
+    </form>
+
+    <p hidden id="hint"></p>
+    <p id="bet-list"></p>
+    <script src="script.js"></script>
+
+    <img hidden id="result-gif" />
+    <p hidden id="result-text">Parabens vc ganhou!</p>
+</body>
+
+</html>
