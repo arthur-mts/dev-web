@@ -11,11 +11,86 @@
 
     <form action="" method="">
         <label for="name">Nome: </label>
-        <input type="text" id="nome" name="nome" pattern="/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s]+$/ix"
+        <input type="text" id="nome" name="nome" pattern="^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s]+$"
             title="Digite apenas letras e espaços." required>
+
+        <br />
+        <label for="email">Email: </label>
+        <input type="email" id="email" name="email" required>
+
+
+        <br />
+        <label for="phone">Numero de telefone: </label>
+        <input type="phone" id="phone" name="phone" required pattern="^\+\d{2}\s\d{2}\s9\d{4}-\d{4}"
+            title="O numero deve estar no formato: +55 83 99999-8888">
+        <br />
+        <label for="cpf">CPF: </label>
+        <input type="cpf" id="cpf" name="cpf" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}"
+            title="O CPF esta invalido">
+        <br />
+
+        <label>Genero: </label>
+        <br />
+        <input id="male" name="gender" required type="radio" value="Masculino" required />
+        <label for="male">Masculino</label>
+        <br />
+        <input id="female" name="gender" required type="radio" value="Feminino" />
+        <label for="female">Feminino</label>
+        <br />
+        <input id="other" name="gender" required type="radio" value="Outre" />
+        <label for="other">Outre</label>
+        <br />
+
+
+        <label for="interests">Interesses: </label>
+        <br />
+        <select id="interests" name="interests" required multiple>
+            <option>Esportes</option>
+            <option>Arte</option>
+            <option>Tecnologia</option>
+            <option>Viagens</option>
+        </select>
+
+        <br />
+        <label for="country">País</label>
+        <select id="country" name="country" required>
+            <option value="brasil">Brasil</option>
+            <option value="eua">Estados Unidos</option>
+            <option value="argentina">Argentina</option>
+        </select>
+        <br />
+
+        <label for="boletim">
+            Desejo assinar boletim
+        </label>
+        <input name="boletim" id="boletim" type="checkbox" value="Assinar boletim" />
+        <br />
+
+        <label for="password">
+            Senha
+        </label>
+        <input type="password" name="password" id="password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$"
+            title="A sua senha deve ter ao menos 8 caracteres, com uma letra minuscula, uma maiuscula e um numero" />
+        <br />
+        <label for="confirm-password">
+            Repita sua senha
+        </label>
+        <input type="password" id="confirm-password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$" />
+        <br />
 
         <input type="submit" value="Enviar">
     </form>
+    <script>
+        const confirmPasswordElement = document.getElementById("confirm-password")
+        const passwordElement = document.getElementById("password")
+
+        function validate() {
+            confirmPasswordElement.setCustomValidity(confirmPasswordElement.value != passwordElement.value ? "Senha invalida!" : "")
+        }
+
+        confirmPasswordElement.onkeyup = validate
+        passwordElement.onchange = validate
+    </script>
 </body>
 
 </html>
