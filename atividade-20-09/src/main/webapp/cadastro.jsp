@@ -36,13 +36,12 @@
     <input type="text" name="nome" id="nome" required>
     <br/>
     <label for="numero">Telefone: </label>
-    <input type="text" name="numero" id="numero" required pattern="\(\d{2}\)\s?9\d{4}[-\s]?\d{4}">
+    <input type="text" name="numero" id="numero" required pattern="\(\d{2}\)\s?9\d{4}(\s|-)?\d{4}$" title="Digite um telefone do tipo: (83)91111-1111">
     <br/>
     <label for="email">Email: </label>
     <input type="email" name="email" id="email">
     <br/>
     <input type="submit" value="Enviar">
-    <input type="text" name="numero1" id="numero1" required pattern="\(\d{2}\)\s?9\d{4}" value="(11)9">
 </form>
 </body>
 </html>
