@@ -13,7 +13,7 @@ import java.io.IOException;
 public class CadastroContatoServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var body = req.getParameterMap();
         ListaTelefonica.cadastrarContato(body.get("nome")[0], body.get("numero")[0], body.get("email")[0]);
         resp.sendRedirect("index.jsp");

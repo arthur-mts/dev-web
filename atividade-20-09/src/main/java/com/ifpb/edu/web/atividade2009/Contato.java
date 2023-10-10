@@ -1,17 +1,17 @@
 package com.ifpb.edu.web.atividade2009;
 
 public class Contato {
+    private static Integer incrementador_id = 0;
+    private Integer id;
     private String nome;
     private String email;
     private String numero;
-
-    public Contato() {
-    }
 
     public Contato(String nome, String email, String numero) {
         setNome(nome);
         setEmail(email);
         setNumero(numero);
+        setId();
     }
 
     public String getNome() {
@@ -36,5 +36,13 @@ public class Contato {
 
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    private void setId() {
+        this.id = incrementador_id++;
     }
 }
