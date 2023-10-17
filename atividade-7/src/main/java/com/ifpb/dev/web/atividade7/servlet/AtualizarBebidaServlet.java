@@ -14,6 +14,10 @@ import java.io.IOException;
 
 @WebServlet(name = "AtualizarBebidaServlet", value = "/bebida/atualizar")
 public class AtualizarBebidaServlet extends HttpServlet {
+
+    public AtualizarBebidaServlet() {
+        System.out.println("Iniciando objeto(");
+    }
     private final BancoDeDados bd = new BancoDeDadosImp();
 
     @Override

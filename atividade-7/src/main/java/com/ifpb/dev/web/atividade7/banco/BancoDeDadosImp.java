@@ -27,7 +27,6 @@ public class BancoDeDadosImp implements BancoDeDados {
         if (this.remover(b.id())) {
             this.salvar(b);
         }
-
     }
 
     @Override
