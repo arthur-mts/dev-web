@@ -2,7 +2,9 @@ FROM openjdk:18-alpine
 
 WORKDIR /app
 
-COPY . .
+COPY atividade-7 .
+
+RUN chmod +x mvnw
 
 RUN ./mvnw package
 
