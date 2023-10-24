@@ -2,7 +2,7 @@ FROM tomcat:10.1-jdk17
 
 WORKDIR /app
 
-COPY . .
+COPY atividade-8-deploy .
 
 RUN chmod +x mvnw
 
