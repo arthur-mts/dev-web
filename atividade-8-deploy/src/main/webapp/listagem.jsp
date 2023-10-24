@@ -7,6 +7,10 @@
 <head>
     <title>Listagem de bebidas</title>
     <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
         ul > li {
             margin-bottom: 20px;
         }
@@ -37,22 +41,30 @@
 <%BancoDeDados bd = new BancoDeDadosImp();%>
 <%List<Bebida> bebidas = bd.listar(null);%>
 <%if (bebidas.size() > 0) { %>
-<ul>
-    <%for (Bebida b : bebidas) {%>
-    <li>
-        <strong><%=b.nome()%></strong>
-        <br/>
-        id: <%=b.id()%>
-        <br/>
-        <%=b.teorAlcoolico()%>% vol
-        <br/>
-        <%=b.tipo()%>
-        <br/>
-        <button type="button" onclick="deletarBebida(<%=b.id()%>)">Deletar</button>
-        <a href="atualizar.jsp?id=<%=b.id()%>">Atualizar</a>
-    </li>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Concentração alcoolica</th>
+        <th>Tipo</th>
+        <th>Deletar</th>
+        <th>Atualizar</th>
+    </tr>
+    <%for (Bebida b: bebidas) {%>
+        <tr>
+            <td><%=b.id()%></td>
+            <td><%=b.nome()%></td>
+            <td><%=b.teorAlcoolico()%></td>
+            <td><%=b.tipo()%></td>
+            <td>
+                <button type="button" onclick="deletarBebida(<%=b.id()%>)">Deletar</button>
+            </td>
+            <td>
+                <a href="atualizar.jsp?id=<%=b.id()%>">Atualizar</a>
+            </td>
+        </tr>
     <%}%>
-</ul>
+</table>
 <a href="criar.jsp">Cadastre uma bebida aqui!</a>
 <%} else {%>
 <h3>Nenhuma bebida cadastrada!</h3>
