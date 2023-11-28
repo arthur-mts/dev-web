@@ -65,6 +65,12 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
+			<version>10.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>10.0.1</version>
 		</dependency>
 	</dependencies>
 
@@ -105,9 +111,6 @@
 					<schemas>public</schemas>
 					<driver>com.mysql.cj.jdbc.Driver</driver>
 					<url>jdbc:mysql://localhost:3306/anuncios</url>
-					<locations>
-						<location>filesystem:/migrations</location>
-					</locations>
 					<schemas>anuncios</schemas>
 					<defaultSchema>anuncios</defaultSchema>
 				</configuration>
