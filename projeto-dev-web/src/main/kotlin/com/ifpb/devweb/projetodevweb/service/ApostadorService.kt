@@ -3,10 +3,9 @@ package com.ifpb.devweb.projetodevweb.service
 import com.ifpb.devweb.projetodevweb.domain.Apostador
 import com.ifpb.devweb.projetodevweb.results.*
 import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.kotlin.mapTo
-import org.jdbi.v3.core.kotlin.useHandleUnchecked
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class ApostadorService(
@@ -30,9 +29,24 @@ class ApostadorService(
 
     fun listarApostador(): ListarApostadoresResults {
         return jdbi.withHandleUnchecked { handle ->
-            OkResult(
+            ListarOkResult(
                 handle.createQuery("select * from apostadores limit 100").mapTo(Apostador::class.java).list()
             )
         }
     }
+
+    fun editarApostador(nome: String, email: String, id: UUID): EditarApostadoresResults {
+        return jdbi.withHandleUnchecked { handle ->
+            val statement = handle.createUpdate("update apostadores set nome = :nome, email = :email where id = :id")
+            statement.bind("nome", nome)
+            statement.bind("email", email)
+            statement.bind("id", id)
+            if (statement.execute()> 0) {
+                EditarOkResult
+            } else {
+                ApostadorNaoEncontradoResult
+            }
+        }
+    }
+
 }

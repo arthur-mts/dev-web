@@ -1,7 +1,5 @@
 package com.ifpb.devweb.projetodevweb.configuration
 
-import com.ifpb.devweb.projetodevweb.domain.Apostador
-import com.ifpb.devweb.projetodevweb.model.mappers.ApostadorRowMapper
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
