@@ -16,5 +16,6 @@ data class Concurso(
     enum class Status {
         EM_ABERTO,
         CONCLUIDO,
+        CANCELADO,
     }
 }

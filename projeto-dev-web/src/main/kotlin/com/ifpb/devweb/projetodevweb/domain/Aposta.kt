@@ -22,5 +22,6 @@ data class Aposta(
         EM_ABERTO,
         GANHOU,
         PERDEU,
+        CANCELADA,
     }
 }

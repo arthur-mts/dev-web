@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
-class ConcursoService(private val jdbi: Jdbi, private val executarSorteioService: ExecutarSorteioService) {
+class ConcursoService(private val jdbi: Jdbi, private val sorteioService: SorteioService) {
     fun encontrarConcurso(id: UUID): Concurso? {
         return jdbi.withHandleUnchecked { handle ->
             handle.createQuery("select * from concurso where id = :id").bind("id", id).mapTo<Concurso>().firstOrNull()
@@ -26,10 +26,18 @@ class ConcursoService(private val jdbi: Jdbi, private val executarSorteioService
         }
     }
 
-    fun listarConcursos(): ListarConcursoResults {
+    fun listarConcursos(status: Concurso.Status?): ListarConcursoResults {
         return jdbi.withHandleUnchecked { handle ->
+            var query = "select * from concurso"
+            if (status != null) {
+                query += " where status = :status"
+            }
+
+            val queryStatement = handle.createQuery(query)
+            status?.let { queryStatement.bind("status", it.name) }
+            val concursos = queryStatement.mapTo<Concurso>().list()
             ListarConcursoOkResult(
-                    concursos = handle.createQuery("select * from concurso").mapTo<Concurso>().list()
+                    concursos = concursos
             )
         }
     }
@@ -42,7 +50,7 @@ class ConcursoService(private val jdbi: Jdbi, private val executarSorteioService
             return ConcursoJaSorteadoResult
         }
 
-        val (idVencedor, numeroSorteado) = executarSorteioService.executa(id)
+        val (idVencedor, numeroSorteado) = sorteioService.executaSorteio(id)
 
         jdbi.withHandleUnchecked { handle ->
             handle.createUpdate("update concurso set numero_sorteado = :numeroSorteado, status = :status where id = :id")
@@ -56,5 +64,16 @@ class ConcursoService(private val jdbi: Jdbi, private val executarSorteioService
                 concurso.copy(numeroSorteado = numeroSorteado, status = Concurso.Status.CONCLUIDO),
                 idVencedor
         )
+    }
+
+    @Transactional
+    fun cancelarConcurso(id: UUID) {
+        jdbi.withHandleUnchecked { handle ->
+            handle.createUpdate("update concurso set status = :status where id = :id")
+                    .bind("id", id)
+                    .bind("status", Concurso.Status.CANCELADO)
+                    .execute()
+        }
+        sorteioService.cancelaSorteio(id)
     }
 }

@@ -8,8 +8,7 @@ import com.ifpb.devweb.projetodevweb.model.dto.EditarApostadorDTO
 import com.ifpb.devweb.projetodevweb.results.*
 import com.ifpb.devweb.projetodevweb.service.ApostaService
 import com.ifpb.devweb.projetodevweb.service.ApostadorService
-import com.ifpb.devweb.projetodevweb.service.ConcursoService
-import com.ifpb.devweb.projetodevweb.service.ExecutarSorteioService
+import com.ifpb.devweb.projetodevweb.service.SorteioService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -55,7 +54,7 @@ class ApostadorController(private val apostadorService: ApostadorService, privat
                 @PathVariable("idConcurso") idConcurso: UUID,
                 @RequestBody body: ApostarDTO): ResponseEntity<*> {
 
-        if (!ExecutarSorteioService.numeroEValidoParaAposta(body.numero)) {
+        if (!SorteioService.numeroEValidoParaAposta(body.numero)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Numero invalido")
         }
 

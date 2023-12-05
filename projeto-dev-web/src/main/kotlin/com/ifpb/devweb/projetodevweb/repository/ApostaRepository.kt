@@ -9,6 +9,14 @@ import java.util.UUID
 
 @Repository
 class ApostaRepository(private val jdbi: Jdbi) {
+    fun cancelarApostasPorConcurso(idConcurso: UUID) {
+        jdbi.withHandleUnchecked { handle ->
+            handle.createUpdate("update apostas set status = :status where id_concurso = :idConcurso")
+                    .bind("idConcurso", idConcurso)
+                    .bind("status", Aposta.Status.CANCELADA)
+                    .execute()
+        }
+    }
     fun listarApostasPorConcurso(idConcurso: UUID): List<Aposta> {
         return jdbi.withHandleUnchecked { handle ->
             handle.createQuery("select ap.*, apo.nome as nome_apostador from apostas ap join apostadores apo on apo.id = ap.id_apostador where ap.id_concurso = :idConcurso").bind("idConcurso", idConcurso).mapTo<Aposta>().toList()
