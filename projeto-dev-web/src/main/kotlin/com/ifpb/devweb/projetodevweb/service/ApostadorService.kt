@@ -3,6 +3,7 @@ package com.ifpb.devweb.projetodevweb.service
 import com.ifpb.devweb.projetodevweb.domain.Apostador
 import com.ifpb.devweb.projetodevweb.results.*
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -11,6 +12,12 @@ import java.util.UUID
 class ApostadorService(
         private val jdbi: Jdbi,
 ) {
+    fun encontrarApostador(id: UUID): Apostador? {
+        return jdbi.withHandleUnchecked { handle ->
+            handle.createQuery("select * from apostador where id = :id").bind("id", id).mapTo<Apostador>().firstOrNull()
+        }
+    }
+
     fun apostadorExiste(id: UUID): Boolean {
         return jdbi.withHandleUnchecked { handle ->
             handle.createQuery("select exists(select * from apostadores where id = :id)").bind("id", id).mapTo(Int::class.java).first() > 0
@@ -36,7 +43,7 @@ class ApostadorService(
     fun listarApostador(): ListarApostadoresResults {
         return jdbi.withHandleUnchecked { handle ->
             ListarOkResult(
-                    handle.createQuery("select * from apostadores limit 100").mapTo(Apostador::class.java).list()
+                    handle.createQuery("select * from apostadores").mapTo(Apostador::class.java).list()
             )
         }
     }

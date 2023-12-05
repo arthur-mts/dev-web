@@ -8,16 +8,11 @@ import com.ifpb.devweb.projetodevweb.model.dto.EditarApostadorDTO
 import com.ifpb.devweb.projetodevweb.results.*
 import com.ifpb.devweb.projetodevweb.service.ApostaService
 import com.ifpb.devweb.projetodevweb.service.ApostadorService
+import com.ifpb.devweb.projetodevweb.service.ConcursoService
+import com.ifpb.devweb.projetodevweb.service.ExecutarSorteioService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.util.*
 
@@ -60,7 +55,7 @@ class ApostadorController(private val apostadorService: ApostadorService, privat
                 @PathVariable("idConcurso") idConcurso: UUID,
                 @RequestBody body: ApostarDTO): ResponseEntity<*> {
 
-        if (body.numero < 1 || body.numero > 100) {
+        if (!ExecutarSorteioService.numeroEValidoParaAposta(body.numero)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Numero invalido")
         }
 
@@ -69,14 +64,21 @@ class ApostadorController(private val apostadorService: ApostadorService, privat
                 idConcurso = idConcurso,
                 idApostador = idApostador,
                 dataAposta = LocalDate.now(),
-                numeroApostado = body.numero
+                numeroApostado = body.numero,
+                status = Aposta.Status.EM_ABERTO,
         )
 
         return when (apostaService.registrarAposta(entity)) {
-            is ApostaCriadaResult -> ResponseEntity.status(HttpStatus.OK).body(entity)
+            is ApostarOkResult -> ResponseEntity.status(HttpStatus.OK).body(entity)
             is ApostarApostadorNaoEncontradoResult -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apostador \"$idApostador\" não encontrado")
             is ApostarConcursoNaoEncontradoResult -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Concurso \"$idConcurso\" não encontrado")
-            is ApostaJaRodouResult -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Concurso \"$idConcurso\" ja rodou")
+            is ApostarConcursoJaRodouResult -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Concurso \"$idConcurso\" ja rodou")
+            is ApostarNumeroJaEscolhido -> ResponseEntity.status(HttpStatus.FORBIDDEN).body("Número \"${body.numero}\" ja escolhido")
         }
+    }
+    @GetMapping("/{id}/apostas")
+    @ResponseStatus(HttpStatus.OK)
+    fun listarApostas(@PathVariable("id") idApostador: UUID): List<Aposta> {
+        return apostaService.listarApostasPorApostador(idApostador)
     }
 }

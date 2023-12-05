@@ -1,17 +1,25 @@
 package com.ifpb.devweb.projetodevweb.service
 
 import com.ifpb.devweb.projetodevweb.domain.Aposta
+import com.ifpb.devweb.projetodevweb.repository.ApostaRepository
 import com.ifpb.devweb.projetodevweb.results.*
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class ApostaService(
-        private val jdbi: Jdbi,
         private val apostadorService: ApostadorService,
         private val concursoService: ConcursoService,
+        private val apostaRepository: ApostaRepository,
 ) {
+
+    fun listarApostasPorConcurso(idConcurso: UUID) = apostaRepository.listarApostasPorConcurso(idConcurso)
+    fun listarApostasPorApostador(idApostador: UUID) = apostaRepository.listarApostasPorApostador(idApostador)
+
     fun registrarAposta(aposta: Aposta): ApostarResults {
         if (!apostadorService.apostadorExiste(aposta.idApostador)) {
             return ApostarApostadorNaoEncontradoResult
@@ -20,20 +28,16 @@ class ApostaService(
         val concurso = concursoService.encontrarConcurso(aposta.idConcurso) ?: return ApostarConcursoNaoEncontradoResult
 
         if (concurso.numeroSorteado != null) {
-            return ApostaJaRodouResult
+            return ApostarConcursoJaRodouResult
         }
 
-        jdbi.withHandleUnchecked { handle ->
-            val statement = handle
-                    .createUpdate(
-                            """
-                            insert into apostas(id, id_apostador, numero_apostado, data_aposta, id_concurso)
-                            values (:id, :idApostador, :numeroApostado, :dataAposta, :idConcurso)
-                            """.trimIndent()
-                    )
-            statement.bindBean(aposta)
-            statement.execute()
+        val apostasJaFeitas = apostaRepository.listarApostasPorConcurso(concurso.id)
+
+        if (apostasJaFeitas.find { it.numeroApostado == aposta.numeroApostado } != null) {
+            return ApostarNumeroJaEscolhido
         }
-        return ApostaCriadaResult
+
+        apostaRepository.salvarAposta(aposta)
+        return ApostarOkResult
     }
 }

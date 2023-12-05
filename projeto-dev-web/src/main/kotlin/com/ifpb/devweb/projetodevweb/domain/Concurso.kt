@@ -10,5 +10,11 @@ data class Concurso(
         @ColumnName("data_sorteio")
         val dataSorteio: LocalDate,
         @ColumnName("numero_sorteado")
-        val numeroSorteado: Int?
-)
+        val numeroSorteado: Int?,
+        val status: Status,
+) {
+    enum class Status {
+        EM_ABERTO,
+        CONCLUIDO,
+    }
+}
