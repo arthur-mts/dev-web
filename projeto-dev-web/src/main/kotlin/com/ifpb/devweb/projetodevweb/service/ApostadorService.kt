@@ -11,6 +11,12 @@ import java.util.UUID
 class ApostadorService(
         private val jdbi: Jdbi,
 ) {
+    fun apostadorExiste(id: UUID): Boolean {
+        return jdbi.withHandleUnchecked { handle ->
+            handle.createQuery("select exists(select * from apostadores where id = :id)").bind("id", id).mapTo(Int::class.java).first() > 0
+        }
+    }
+
     fun criarApostador(apostador: Apostador): CriarApostadorResults {
         return jdbi.withHandleUnchecked { handle ->
             apostador.email?.let {
@@ -30,7 +36,7 @@ class ApostadorService(
     fun listarApostador(): ListarApostadoresResults {
         return jdbi.withHandleUnchecked { handle ->
             ListarOkResult(
-                handle.createQuery("select * from apostadores limit 100").mapTo(Apostador::class.java).list()
+                    handle.createQuery("select * from apostadores limit 100").mapTo(Apostador::class.java).list()
             )
         }
     }
@@ -41,7 +47,7 @@ class ApostadorService(
             statement.bind("nome", nome)
             statement.bind("email", email)
             statement.bind("id", id)
-            if (statement.execute()> 0) {
+            if (statement.execute() > 0) {
                 EditarOkResult
             } else {
                 ApostadorNaoEncontradoResult
