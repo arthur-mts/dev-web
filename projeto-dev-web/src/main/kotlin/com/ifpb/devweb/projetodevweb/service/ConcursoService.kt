@@ -45,7 +45,6 @@ class ConcursoService(private val jdbi: Jdbi, private val executarSorteioService
         val (idVencedor, numeroSorteado) = executarSorteioService.executa(id)
 
         jdbi.withHandleUnchecked { handle ->
-            throw RuntimeException("EITA")
             handle.createUpdate("update concurso set numero_sorteado = :numeroSorteado, status = :status where id = :id")
                     .bind("id", id)
                     .bind("numeroSorteado", numeroSorteado)
